@@ -1,14 +1,17 @@
 public class Task2 {
   public static void main(String[] args) throws InterruptedException {
-    var child = new Thread(Task2::printSomething);
+    Runnable task = () -> printSomething("child");
+
+    var child = new Thread(task);
     child.start();
     child.join();
-    printSomething();
+
+    printSomething("parent");
   }
 
-  private static void printSomething() {
-    for (var i = 0; i < 10; i++){
-      System.out.println((i+1) + ": string");
+  private static void printSomething(String caller) {
+    for (var i = 0; i < 10; i++) {
+      System.out.println(caller + " prints " + (i + 1) + ": string");
     }
   }
 }
