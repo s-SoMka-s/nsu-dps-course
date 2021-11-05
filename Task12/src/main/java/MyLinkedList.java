@@ -19,7 +19,7 @@ public class MyLinkedList {
     }
   }
 
-  public MyLinkedListNode getByIndex(int index) {
+  public MyLinkedListNode get(int index) {
     var curr = head.getNext();
     for (var i = 0; i < index; i++) {
       curr = curr.getNext();

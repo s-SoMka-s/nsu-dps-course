@@ -9,7 +9,7 @@ public class Main {
 
     var scanner = new Scanner(System.in);
     while (true) {
-      String str = scanner.nextLine();
+      var str = scanner.nextLine();
       if (str.equals(".")) {
         sorter.interrupt();
         break;

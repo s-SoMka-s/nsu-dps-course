@@ -1,5 +1,3 @@
-import java.util.Collections;
-
 public class Sorter extends Thread {
 
   final MyLinkedList list;
@@ -15,9 +13,9 @@ public class Sorter extends Thread {
 
     for (int i = 0; i < list.getSize(); i++) {
       for (int j = i; j < list.getSize(); j++) {
-        var c1 = list.getByIndex(i);
-        var c2 = list.getByIndex(j);
-        if (c1.compareTo(c2) > 0) {
+        var c1 = list.get(i);
+        var c2 = list.get(j);
+        if (c1.compareTo(c2) < 0) {
           list.swap(c1, c2);
         }
       }
