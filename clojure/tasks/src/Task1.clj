@@ -9,7 +9,7 @@
 
 
 (defn scaleWords [words alphabet]
-  (map (fn [word] (scaleWord word alphabet)) words) ; к каждому word применям scaleWord
+  (map (fn [word] (scaleWord word alphabet)) words)
   )
 
 (defn main [alphabet, N]
@@ -22,4 +22,4 @@
 ; (reduce + [1 2 3 4 5]) => 15
 ; (concat [1 2] [3 4]) => (1 2 3 4)
 
-(println (main ["a" "b" "c" "d"] 2))
+(println (main ["a" "b" "c" "d"] 3))

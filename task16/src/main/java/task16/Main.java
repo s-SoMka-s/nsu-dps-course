@@ -22,9 +22,9 @@ public class Main {
     }
   }
 
-  private static void ReqResp(String requestURL) {
+  private static void sendRequest(URI uri) {
     var client = HttpClient.newHttpClient();
-    var request = HttpRequest.newBuilder().uri(URI.create(requestURL)).build();
+    var request = HttpRequest.newBuilder().uri(uri).build();
 
     client.sendAsync(request, HttpResponse.BodyHandlers.ofLines())
         .thenApply(HttpResponse::body)
@@ -43,8 +43,8 @@ public class Main {
   }
 
   public static void main(String[] args) {
-    var requestURL = "http://34.125.200.54/planned-orders/calendar";
-
-    ReqResp(requestURL);
+    var requestURL = "https://vecher.moscow/";
+    var uri = URI.create(requestURL);
+    sendRequest(uri);
   }
 }
