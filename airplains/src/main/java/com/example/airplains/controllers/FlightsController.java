@@ -27,11 +27,12 @@ public class FlightsController {
     }
 
     @GetMapping("route")
-    public List<RouteDto> getAllRoutes(@RequestParam String from,
-                                       @RequestParam String to,
-                                       @RequestParam String departureDate,
-                                       // @RequestParam FareConditions fareCondition,
-                                       @RequestParam(required = false, defaultValue = "0") int connections) {
-        return flightsService.getRoutes(from, to, departureDate, FareConditions.ECONOMY, connections);
+    public RouteDto getAllRoutes(
+            @RequestParam String from,
+            @RequestParam String to,
+            @RequestParam String departureDate,
+            @RequestParam("fareCondition") FareConditions fareCondition,
+            @RequestParam(required = false, defaultValue = "0") int connections) {
+        return flightsService.getRoutes(from, to, departureDate, fareCondition, connections);
     }
 }

@@ -2,11 +2,14 @@ package com.example.airplains.servicies;
 
 import com.example.airplains.controllers.models.mappers.FlightMapper;
 import com.example.airplains.controllers.models.output.routes.RouteDto;
+import com.example.airplains.controllers.models.output.routes.RouteNodeDto;
 import com.example.airplains.entities.flights.FareConditions;
 import com.example.airplains.entities.flights.Flight;
 import com.example.airplains.repositories.AirportsRepository;
+import com.example.airplains.repositories.FlightPriceRepository;
 import com.example.airplains.repositories.FlightsRepository;
 import com.example.airplains.repositories.TicketFlightsRepository;
+import com.example.airplains.tools.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.airplains.utils.DestinationUtils.isAirportCode;
+import static com.example.airplains.tools.utils.DestinationUtils.isAirportCode;
 
 @Service
 public class FlightsService {
@@ -24,16 +27,19 @@ public class FlightsService {
     private final FlightsRepository flights;
     private final FlightMapper flightMapper;
     private final TicketFlightsRepository ticketFlights;
+    private final FlightPriceRepository flightPrices;
 
     @Autowired
     public FlightsService(
             AirportsRepository airports,
             FlightsRepository flights,
             TicketFlightsRepository ticketFlights,
+            FlightPriceRepository flightPrices,
             FlightMapper flightMapper) {
         this.airports = airports;
         this.flights = flights;
         this.ticketFlights = ticketFlights;
+        this.flightPrices = flightPrices;
         this.flightMapper = flightMapper;
     }
 
@@ -41,7 +47,7 @@ public class FlightsService {
         return this.flights.findAll();
     }
 
-    public List<RouteDto> getRoutes(String from,
+    public RouteDto getRoutes(String from,
                                     String to,
                                     String rawDepartureDate,
                                     FareConditions fareCondition,
@@ -50,31 +56,90 @@ public class FlightsService {
 
         try {
             var departureDateFrom = new Date(simpleDateFormat.parse(rawDepartureDate).getTime());
-            var calendar = Calendar.getInstance();
-            calendar.setTime(departureDateFrom);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-            var departureDateTo = new Date(calendar.getTimeInMillis());
+            var departureDateTo = DateUtils.addDays(departureDateFrom, 1);
 
-            return getAllAppropriateRoutes(from, to, departureDateFrom, departureDateTo, fareCondition, numberOfConnections);
+            var visitedCities = new HashSet<String>();
+            visitedCities.add(this.getCity(from));
+
+            var rootNodes = getAllAppropriateRoutes(
+                    from,
+                    to,
+                    departureDateFrom,
+                    departureDateTo,
+                    fareCondition,
+                    numberOfConnections,
+                    visitedCities
+            );
+
+            return flightMapper.mapRouteDto(rootNodes, getAirport(to), getCity(to));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private ArrayList<RouteDto> getAllAppropriateRoutes(String from, String to, Date departureDateFrom, Date departureDateTo, FareConditions fareCondition, int numberOfConnections) {
+    private List<RouteNodeDto> getAllAppropriateRoutes(
+            String from,
+            String to,
+            Date departureDateFrom,
+            Date departureDateTo,
+            FareConditions fareCondition,
+            int numberOfConnections,
+            Set<String> visitedCities) {
         var flightsFrom = getAllFlightsFromPointAndBetweenDates(from, departureDateFrom, departureDateTo);
 
         if (numberOfConnections == 0) {
-            var r = flightsFrom.stream()
+            return flightsFrom.stream()
                     .filter(f -> f.arrivesTo(to))
-                    .map(flightMapper::mapRouteNode)
+                    .filter(f -> !visitedCities.contains(f.getArrivalCity()))
+                    .map(f -> this.flightMapper.mapRouteNode(f, fareCondition))
                     .collect(Collectors.toList());
-
-            return new ArrayList();
         }
 
-        return new ArrayList();
+        var res = new ArrayList<RouteNodeDto>();
+        for (var flight: flightsFrom) {
+            // except already visited cities
+            if (visitedCities.contains(flight.getArrivalCity())) {
+                continue;
+            }
+
+            // except flying out of destination
+            if (flight.fliesOutOf(to)) {
+                continue;
+            }
+
+            /*var price = this.flightPrices.findPrice(
+                    flight.getArrivalAirport().getAirportCode(),
+                    flight.getDepartureAirport().getAirportCode(),
+                    fareCondition);
+
+            if (price == null) {
+                return;
+            }*/
+
+            var childVisitedCities = new HashSet<>(visitedCities);
+            childVisitedCities.add(flight.getArrivalCity());
+
+            var children = getAllAppropriateRoutes(
+                    flight.getArrivalAirport().getAirportCode(),
+                    to,
+                    flight.getScheduledArrival(),
+                    DateUtils.addDays(flight.getScheduledArrival(), 1),
+                    fareCondition,
+                    numberOfConnections - 1,
+                    childVisitedCities
+            );
+
+            if (children.size() == 0) {
+                continue;
+            }
+
+            var routeNode = this.flightMapper.mapRouteNode(flight, children, fareCondition);
+
+            res.add(routeNode);
+        }
+
+        return res;
     }
 
     private boolean arrivesTo(Flight flight, String destination) {
@@ -99,5 +164,21 @@ public class FlightsService {
                     from,
                     departureDate,
                     departureDatePlusOne));
+    }
+
+    private String getCity(String source){
+        if (isAirportCode(source)) {
+            return this.airports.findFirstByAirportCode(source).getCity();
+        }
+
+        return source;
+    }
+
+    private String getAirport(String source) {
+        if (isAirportCode(source)) {
+            return source;
+        }
+
+        return this.airports.findFirstByCity(source).getAirportCode();
     }
 }

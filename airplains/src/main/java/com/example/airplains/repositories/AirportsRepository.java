@@ -9,4 +9,6 @@ public interface AirportsRepository extends JpaRepository<Airport, String> {
     List<Airport> findAllByCity(String city);
 
     Airport findFirstByAirportCode(String code);
+
+    Airport findFirstByCity(String city);
 }

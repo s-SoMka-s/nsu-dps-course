@@ -13,11 +13,13 @@ import java.util.List;
 @JsonDeserialize(builder = RouteDto.RouteDtoBuilder.class)
 public class RouteDto {
 
-    List<RouteNode> routeNodes;
-    String fareCondition;
-    Integer price;
+    String sourceAirport;
+    String sourceCity;
+    String destinationAirport;
+    String destinationCity;
     Date departureDate;
-    Date arrivalDate;
+
+    List<RouteNodeDto> routes;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class RouteDtoBuilder {

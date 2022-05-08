@@ -1,4 +1,4 @@
-package com.example.airplains.utils;
+package com.example.airplains.tools.utils;
 
 public class DestinationUtils {
     public static boolean isAirportCode(String str) {

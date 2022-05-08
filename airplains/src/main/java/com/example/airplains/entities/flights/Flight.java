@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.sql.Date;
 
-import static com.example.airplains.utils.DestinationUtils.isAirportCode;
+import static com.example.airplains.tools.utils.DestinationUtils.isAirportCode;
 
 
 @Getter
@@ -62,5 +62,13 @@ public class Flight {
         }
 
         return this.getArrivalAirport().getCity().equals(destination);
+    }
+
+    public boolean fliesOutOf(String source) {
+        if (isAirportCode(source)) {
+            return this.getDepartureAirport().getAirportCode().equals(source);
+        }
+
+        return this.getDepartureAirport().getCity().equals(source);
     }
 }
