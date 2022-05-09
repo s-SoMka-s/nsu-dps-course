@@ -1,0 +1,68 @@
+FORMAT: 1A
+HOST: https://localhost
+
+# plains-app-api
+
+# Перелёты [/flights]
+
+## Cписок всех доступных исходных и целевых городов [GET /flights/cities]
+
++ Response 200 (application/json)
+    
+
+## Cписок всех доступных исходных и целевых аэропортов [GET /flights/airports{?city}]
+
++ Parameters
+    + city: Moscow (string, optional) - The city in which to look for airports
+
++ Response 200 (application/json)
+
+
+## Маршруты между двумя точками [GET /flights/routes{?from,to,departureDate,bookingClass,connections}]
+
++ Parameters
+    + from: DME (string, required) - пункт отправления, название города или код аэропорта
+    + to: LED (string, required) - пункт назначения, название города или код аэропорта
+    + departureDate: `20-08-2017` (string, required) - параметр ограничивает рейсы рейсами, вылетающими между 0:00:00 указанной даты и 00:00:00 следующей даты
+    + bookingClass: Economy (string, required) - класс бронирования
+    + connections: 0 (number, optional) - количество пересадок
+        + Default: 0
+
++ Response 200 (application/json)
+
+
+## Забронировать маршрут [POST /flights/bookings]
+
++ Request
+    + Attributes (object)
+
++ Response 200 (application/json)
+
+
+## Регистрация на рейс [POST /flights/{id}/check-in]
+
++ Parameters
+    + id: 1 (number, required) - Идентификатор рейса
+    
++ Request
+    + Attributes (object)    
+    
++ Response 200 (application/json)
+
+
+# Аэропорты [/airports]
+
+## Расписание прилетов [GET /airports/{code}/schedule/inbound]
+
++ Parameters
+    + code: DME (string) - код аэропорта.
+    
++ Response 200 (application/json)
+
+
+## Расписание вылетов [GET /airports/{code}/schedule/outbound]
+
++ Parameters
+    + code: DME (string) - код аэропорта.
+    
++ Response 200 (application/json)
