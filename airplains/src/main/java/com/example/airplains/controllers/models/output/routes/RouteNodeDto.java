@@ -30,7 +30,7 @@ public class RouteNodeDto {
 
     Integer flightId;
 
-    String amount;
+    Double amount;
 
     FareConditions fareConditions;
 

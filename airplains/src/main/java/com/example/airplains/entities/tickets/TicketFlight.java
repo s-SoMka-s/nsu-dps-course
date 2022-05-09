@@ -15,11 +15,10 @@ public class TicketFlight {
 
     @Id
     @PrimaryKeyJoinColumn(name = "ticket_no", referencedColumnName = "ticket_no")
-    private int ticketNo;
+    private String ticketNo;
 
-    @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "flight_id")
-    private Flight flight;
+    @Column(name = "flight_id")
+    private Integer flightId;
 
     @Column(name = "fare_conditions")
     private FareConditions fareCondition;

@@ -1,13 +1,14 @@
 package com.example.airplains.controllers;
 
+import com.example.airplains.controllers.models.input.CheckInParameters;
+import com.example.airplains.controllers.models.input.NewBookingParameters;
 import com.example.airplains.controllers.models.output.routes.RouteDto;
 import com.example.airplains.entities.flights.FareConditions;
 import com.example.airplains.entities.flights.Flight;
+import com.example.airplains.repositories.FlightsRepository;
+import com.example.airplains.servicies.BookingService;
 import com.example.airplains.servicies.FlightsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,9 +17,14 @@ import java.util.List;
 public class FlightsController {
 
     private final FlightsService flightsService;
+    private final BookingService bookingService;
+    private final FlightsRepository flights;
 
-    public FlightsController(FlightsService flightsService){
+    public FlightsController(FlightsRepository flights, FlightsService flightsService, BookingService bookingService)
+    {
+        this.flights = flights;
         this.flightsService = flightsService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping
@@ -26,7 +32,7 @@ public class FlightsController {
         return flightsService.getAllFlights();
     }
 
-    @GetMapping("route")
+    @GetMapping("routes")
     public RouteDto getAllRoutes(
             @RequestParam String from,
             @RequestParam String to,
@@ -34,5 +40,20 @@ public class FlightsController {
             @RequestParam("fareCondition") FareConditions fareCondition,
             @RequestParam(required = false, defaultValue = "0") int connections) {
         return flightsService.getRoutes(from, to, departureDate, fareCondition, connections);
+    }
+
+    @PostMapping("bookings")
+    public void bookRoute(@RequestBody NewBookingParameters parameters){
+        this.bookingService.bookRoute(parameters);
+    }
+
+    @PostMapping("{flightId}/check-in")
+    public void checkIn(@PathVariable Integer flightId, @RequestBody CheckInParameters parameters) {
+        var flight = this.flights.findById(flightId);
+        if (flight.isEmpty()){
+            return;
+        }
+
+        this.bookingService.checkInForFlight(flightId, parameters.getTicketNo());
     }
 }

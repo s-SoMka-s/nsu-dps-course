@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -27,4 +28,12 @@ public class Ticket {
 
     @Column(name = "contact_data")
     private String contactData;
+
+    public Ticket() {
+        this.ticketNo =  "_" + UUID.randomUUID().toString().substring(0, 12);
+        this.passengerId = UUID.randomUUID().toString().substring(0, 20);
+        this.passengerName = "";
+        this.contactData = "";
+        this.booking = null;
+    }
 }
