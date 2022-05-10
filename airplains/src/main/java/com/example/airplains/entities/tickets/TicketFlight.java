@@ -1,7 +1,6 @@
 package com.example.airplains.entities.tickets;
 
 import com.example.airplains.entities.flights.FareConditions;
-import com.example.airplains.entities.flights.Flight;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,12 +13,13 @@ import javax.persistence.*;
 public class TicketFlight {
 
     @Id
-    @PrimaryKeyJoinColumn(name = "ticket_no", referencedColumnName = "ticket_no")
+    @Column(name = "ticket_no")
     private String ticketNo;
 
     @Column(name = "flight_id")
     private Integer flightId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "fare_conditions")
     private FareConditions fareCondition;
 

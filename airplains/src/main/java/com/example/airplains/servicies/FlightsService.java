@@ -26,25 +26,15 @@ public class FlightsService {
     private final AirportsRepository airports;
     private final FlightsRepository flights;
     private final FlightMapper flightMapper;
-    private final TicketFlightsRepository ticketFlights;
-    private final FlightPriceRepository flightPrices;
 
     @Autowired
     public FlightsService(
             AirportsRepository airports,
             FlightsRepository flights,
-            TicketFlightsRepository ticketFlights,
-            FlightPriceRepository flightPrices,
             FlightMapper flightMapper) {
         this.airports = airports;
         this.flights = flights;
-        this.ticketFlights = ticketFlights;
-        this.flightPrices = flightPrices;
         this.flightMapper = flightMapper;
-    }
-
-    public List<Flight> getAllFlights() {
-        return this.flights.findAll();
     }
 
     public RouteDto getRoutes(String from,
@@ -141,16 +131,6 @@ public class FlightsService {
 
         return res;
     }
-
-    private boolean arrivesTo(Flight flight, String destination) {
-        if (isAirportCode(destination)) {
-            return flight.getArrivalAirport().getAirportCode().equals(destination);
-        }
-
-        return flight.getArrivalAirport().getCity().equals(destination);
-    }
-
-
 
     private HashSet<Flight> getAllFlightsFromPointAndBetweenDates(String from, Date departureDate, Date departureDatePlusOne) {
         if (isAirportCode(from)) {

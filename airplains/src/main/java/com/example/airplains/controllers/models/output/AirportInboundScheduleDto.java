@@ -18,6 +18,9 @@ public class AirportInboundScheduleDto {
     @JsonProperty("timeOfArrival")
     Date scheduledArrival;
 
+    @JsonProperty("status")
+    String status;
+
     @JsonProperty("flightNo")
     String flightNo;
 

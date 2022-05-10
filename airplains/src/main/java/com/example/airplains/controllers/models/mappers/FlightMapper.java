@@ -20,6 +20,7 @@ public class FlightMapper {
         return AirportInboundScheduleDto.builder()
                 .departureAirport(flight.getDepartureAirport().getAirportCode())
                 .flightNo(flight.getFlightNo())
+                .status(flight.getStatus())
                 .scheduledArrival(flight.getScheduledArrival())
                 .dayOfWeek(simpleDateformat.format(flight.getScheduledArrival()))
                 .build();
@@ -29,6 +30,7 @@ public class FlightMapper {
         return AirportOutboundScheduleDto.builder()
                 .arrivalAirport(flight.getArrivalAirport().getAirportCode())
                 .flightNo(flight.getFlightNo())
+                .status(flight.getStatus())
                 .scheduledDeparture(flight.getScheduledDeparture())
                 .dayOfWeek(simpleDateformat.format(flight.getScheduledDeparture()))
                 .build();

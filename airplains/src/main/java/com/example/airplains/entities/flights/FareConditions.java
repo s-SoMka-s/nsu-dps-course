@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum FareConditions {
-    ECONOMY("Economy"),
-    COMFORT("Comfort"),
-    BUSINESS("Business");
+    Economy("Economy"),
+    Comfort("Comfort"),
+    Business("Business");
 
     FareConditions(String value){
         this.value = value;

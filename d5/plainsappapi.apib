@@ -8,14 +8,10 @@ HOST: https://localhost
 ## Cписок всех доступных исходных и целевых городов [GET /flights/cities]
 
 + Response 200 (application/json)
+    + Attributes (array, fixed-type)
+        + Абакан (string)
+        + Анадырь (string)
     
-
-## Cписок всех доступных исходных и целевых аэропортов [GET /flights/airports{?city}]
-
-+ Parameters
-    + city: Moscow (string, optional) - The city in which to look for airports
-
-+ Response 200 (application/json)
 
 
 ## Маршруты между двумя точками [GET /flights/routes{?from,to,departureDate,bookingClass,connections}]
@@ -29,14 +25,16 @@ HOST: https://localhost
         + Default: 0
 
 + Response 200 (application/json)
+ + Attributes (RouteSummary)
 
 
 ## Забронировать маршрут [POST /flights/bookings]
 
 + Request
-    + Attributes (object)
+    + Attributes (NewBookingParameters)
 
 + Response 200 (application/json)
+    + Attributes (array[BookingSummary])
 
 
 ## Регистрация на рейс [POST /flights/{id}/check-in]
@@ -45,12 +43,23 @@ HOST: https://localhost
     + id: 1 (number, required) - Идентификатор рейса
     
 + Request
-    + Attributes (object)    
+    + Attributes (CheckInParameters)    
     
 + Response 200 (application/json)
+    + Attributes (BoardingPassSummary)
 
 
 # Аэропорты [/airports]
+
+## Cписок всех доступных исходных и целевых аэропортов [GET /airports{?city}]
+
++ Parameters
+    + city: Moscow (string, optional) - город, в котором нужны аэропорты
+
++ Response 200 (application/json)
+    + Attributes (array[AirportSummary])
+
+
 
 ## Расписание прилетов [GET /airports/{code}/schedule/inbound]
 
@@ -58,6 +67,7 @@ HOST: https://localhost
     + code: DME (string) - код аэропорта.
     
 + Response 200 (application/json)
+    + Attributes (array[AirportInboundScheduleSummary])
 
 
 ## Расписание вылетов [GET /airports/{code}/schedule/outbound]
@@ -66,3 +76,79 @@ HOST: https://localhost
     + code: DME (string) - код аэропорта.
     
 + Response 200 (application/json)
+    + Attributes (array[AirportOutboundScheduleSummary])
+
+
+
+## Data Structures
+
+### AirportSummary
++ airportCode: YKS (string)
++ name: Якутск (string)
++ city: Якутск (string)
++ timezone: `Asia/Yakutsk` (string)
+
+
+### AirportInboundScheduleSummary
++ dayOfWeek: воскресенье (string)
++ timeOfArrival: `2017-08-20` (string)
++ status: Scheduled (string)
++ flightNo: PG0407 (string)
++ origin: LED (string)
+
+
+### AirportOutboundScheduleSummary
++ dayOfWeek: воскресенье (string)
++ timeOfDeparture: `2017-08-20` (string)
++ status: Scheduled (string)
++ flightNo: PG0407 (string)
++ destination: LED (string)
+
+
+### RouteSummary
++ sourceAirport: DME (string)
++ sourceCity: Москва (string)
++ destinationAirport: LED (string)
++ destinationCity: `Санкт-Петербург` (string)
++ departureDate: `2017-08-20` (string)
++ routes (array[RouteNodeSummary])
+
+
+### RouteNodeSummary
++ children (array)
++ departureAirport: DME (string)
++ arrivalAirport: LED (string)
++ departureCity: Москва (string)
++ arrivalCity: `Санкт-Петербург` (string)
++ departureDate: `2017-08-20` (string)
++ arrivalDate: `2017-08-20` (string)
++ flightId: 163 (number)
++ amount: 12.1 (number)
++ fareConditions: Economy (string)
+
+
+### NewBookingParameters
++ passengerName: `Иванов Петр Иванович`
++ flights (array[SelectedFlightParameters])
+
+
+### SelectedFlightParameters
++ flightId: 1 (number)
++ amount: 12.95 (number)
++ fareConditions: Economy (string)
+
+
+### BookingSummary
++ ticketNumber: `_f25c7459-bd5`(string)
++ flightId: 1 (number)
+
+
+### CheckInParameters
++ ticketNumber: 0005432081075 (string)
+
+
+### BoardingPassSummary
++ ticketNo: `_f25c7459-bd5`(string)
++ flightId: 1 (number)
++ BoardingNo: 1(number)
++ seatNo: 1A (string)

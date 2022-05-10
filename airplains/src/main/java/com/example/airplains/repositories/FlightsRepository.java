@@ -8,9 +8,14 @@ import java.sql.Date;
 import java.util.List;
 
 public interface FlightsRepository extends JpaRepository<Flight, Integer> {
-    List<Flight> findAllByDepartureAirport(String airport);
+    @Query("select f from Flight f where " +
+            "f.departureAirport.airportCode = ?1"
+    )
+    List<Flight> findAllByDepartureAirportCode(String code);
 
-    List<Flight> findAllByArrivalAirport(String airport);
+    @Query("select f from Flight f where " +
+            "f.arrivalAirport.airportCode = ?1")
+    List<Flight> findAllByArrivalAirportCode(String code);
 
     @Query("select f from Flight f where " +
             "f.departureAirport.airportCode = ?1 and" +

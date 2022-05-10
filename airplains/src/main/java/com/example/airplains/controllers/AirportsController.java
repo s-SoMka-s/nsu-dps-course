@@ -37,17 +37,17 @@ public class AirportsController {
         return this.airports.findAllByCity(city);
     }
 
-    @GetMapping("{airport}/schedule/inbound")
-    public List<AirportInboundScheduleDto> getAirportInboundScheduleInbound(@PathVariable String airport) {
-        return this.flights.findAllByArrivalAirport(airport)
+    @GetMapping("{airportCode}/schedule/inbound")
+    public List<AirportInboundScheduleDto> getAirportInboundSchedule(@PathVariable String airportCode) {
+        return this.flights.findAllByArrivalAirportCode(airportCode)
                 .stream()
                 .map(flightMapper::mapInboundSchedule)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("{airport}/schedule/outbound")
-    public List<AirportOutboundScheduleDto> getAirportOutboundScheduleInbound(@PathVariable String airport) {
-        return this.flights.findAllByDepartureAirport(airport)
+    @GetMapping("{airportCode}/schedule/outbound")
+    public List<AirportOutboundScheduleDto> getAirportOutboundSchedule(@PathVariable String airportCode) {
+        return this.flights.findAllByDepartureAirportCode(airportCode)
                 .stream()
                 .map(flightMapper::mapOutboundSchedule)
                 .collect(Collectors.toList());
