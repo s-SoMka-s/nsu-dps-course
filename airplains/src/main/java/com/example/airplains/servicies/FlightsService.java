@@ -6,17 +6,16 @@ import com.example.airplains.controllers.models.output.routes.RouteNodeDto;
 import com.example.airplains.entities.flights.FareConditions;
 import com.example.airplains.entities.flights.Flight;
 import com.example.airplains.repositories.AirportsRepository;
-import com.example.airplains.repositories.FlightPriceRepository;
 import com.example.airplains.repositories.FlightsRepository;
-import com.example.airplains.repositories.TicketFlightsRepository;
 import com.example.airplains.tools.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.airplains.tools.utils.DestinationUtils.isAirportCode;
@@ -38,41 +37,33 @@ public class FlightsService {
     }
 
     public RouteDto getRoutes(String from,
-                                    String to,
-                                    String rawDepartureDate,
-                                    FareConditions fareCondition,
-                                    int numberOfConnections) {
-        var simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                              String to,
+                              OffsetDateTime departureDateFrom,
+                              FareConditions fareCondition,
+                              int numberOfConnections) {
+        var departureDateTo = DateUtils.addDays(departureDateFrom, 1);
 
-        try {
-            var departureDateFrom = new Date(simpleDateFormat.parse(rawDepartureDate).getTime());
+        var visitedCities = new HashSet<String>();
+        visitedCities.add(this.getCity(from));
 
-            var departureDateTo = DateUtils.addDays(departureDateFrom, 1);
+        var rootNodes = getAllAppropriateRoutes(
+                from,
+                to,
+                departureDateFrom,
+                departureDateTo,
+                fareCondition,
+                numberOfConnections,
+                visitedCities
+        );
 
-            var visitedCities = new HashSet<String>();
-            visitedCities.add(this.getCity(from));
-
-            var rootNodes = getAllAppropriateRoutes(
-                    from,
-                    to,
-                    departureDateFrom,
-                    departureDateTo,
-                    fareCondition,
-                    numberOfConnections,
-                    visitedCities
-            );
-
-            return flightMapper.mapRouteDto(rootNodes, getAirport(to), getCity(to));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return flightMapper.mapRouteDto(rootNodes, getAirport(to), getCity(to));
     }
 
     private List<RouteNodeDto> getAllAppropriateRoutes(
             String from,
             String to,
-            Date departureDateFrom,
-            Date departureDateTo,
+            OffsetDateTime departureDateFrom,
+            OffsetDateTime departureDateTo,
             FareConditions fareCondition,
             int numberOfConnections,
             Set<String> visitedCities) {
@@ -87,7 +78,7 @@ public class FlightsService {
         }
 
         var res = new ArrayList<RouteNodeDto>();
-        for (var flight: flightsFrom) {
+        for (var flight : flightsFrom) {
             // except already visited cities
             if (visitedCities.contains(flight.getArrivalCity())) {
                 continue;
@@ -132,7 +123,7 @@ public class FlightsService {
         return res;
     }
 
-    private HashSet<Flight> getAllFlightsFromPointAndBetweenDates(String from, Date departureDate, Date departureDatePlusOne) {
+    private HashSet<Flight> getAllFlightsFromPointAndBetweenDates(String from, OffsetDateTime departureDate, OffsetDateTime departureDatePlusOne) {
         if (isAirportCode(from)) {
             return new HashSet<>(this.flights.findAllByDepartureAirport(
                     from,
@@ -141,12 +132,12 @@ public class FlightsService {
         }
 
         return new HashSet<>(this.flights.findAllByDepartureCity(
-                    from,
-                    departureDate,
-                    departureDatePlusOne));
+                from,
+                departureDate,
+                departureDatePlusOne));
     }
 
-    private String getCity(String source){
+    private String getCity(String source) {
         if (isAirportCode(source)) {
             return this.airports.findFirstByAirportCode(source).getCity();
         }

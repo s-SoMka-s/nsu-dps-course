@@ -3,7 +3,6 @@ package com.example.airplains.entities.tickets;
 import com.example.airplains.entities.Booking;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -27,15 +26,11 @@ public class Ticket {
     @Column(name = "passenger_name")
     private String passengerName;
 
-//    @Type(type = "jsonb")
-//    @Column(name = "contact_data", columnDefinition = "jsonb")
-//    private String contactData;
 
     public Ticket() {
         this.ticketNo =  "_" + UUID.randomUUID().toString().substring(0, 12);
         this.passengerId = UUID.randomUUID().toString().substring(0, 20);
         this.passengerName = "";
-        //this.contactData = null;
         this.booking = null;
     }
 }

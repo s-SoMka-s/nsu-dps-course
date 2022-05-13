@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface FlightsRepository extends JpaRepository<Flight, Integer> {
@@ -23,8 +24,8 @@ public interface FlightsRepository extends JpaRepository<Flight, Integer> {
     )
     List<Flight> findAllByDepartureAirport(
             String airport,
-            Date scheduledDeparture,
-            Date scheduledDeparture2
+            OffsetDateTime scheduledDeparture,
+            OffsetDateTime scheduledDeparture2
     );
 
     @Query("select f from Flight f where " +
@@ -32,7 +33,7 @@ public interface FlightsRepository extends JpaRepository<Flight, Integer> {
             "(f.scheduledDeparture between ?2 and ?3)")
     List<Flight> findAllByDepartureCity(
             String city,
-            Date scheduledDeparture,
-            Date scheduledDeparture2
+            OffsetDateTime scheduledDeparture,
+            OffsetDateTime scheduledDeparture2
     );
 }

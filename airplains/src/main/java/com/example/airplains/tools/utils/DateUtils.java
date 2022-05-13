@@ -1,15 +1,11 @@
 package com.example.airplains.tools.utils;
 
 import java.sql.Date;
-import java.util.Calendar;
+import java.time.OffsetDateTime;
 
 public class DateUtils {
 
-    public static Date addDays(Date date, int days) {
-        var calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, days);
-
-        return new Date(calendar.getTimeInMillis());
+    public static OffsetDateTime addDays(OffsetDateTime date, int days) {
+        return date.plusDays(days);
     }
 }

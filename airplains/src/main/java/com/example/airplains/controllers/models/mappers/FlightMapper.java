@@ -8,6 +8,7 @@ import com.example.airplains.entities.flights.FareConditions;
 import com.example.airplains.entities.flights.Flight;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class FlightMapper {
                 .departureAirport(flight.getDepartureAirport().getAirportCode())
                 .flightNo(flight.getFlightNo())
                 .status(flight.getStatus())
-                .scheduledArrival(flight.getScheduledArrival())
+                .scheduledArrival(new Date(flight.getScheduledArrival().toInstant().toEpochMilli()))
                 .dayOfWeek(simpleDateformat.format(flight.getScheduledArrival()))
                 .build();
     }
@@ -31,7 +32,7 @@ public class FlightMapper {
                 .arrivalAirport(flight.getArrivalAirport().getAirportCode())
                 .flightNo(flight.getFlightNo())
                 .status(flight.getStatus())
-                .scheduledDeparture(flight.getScheduledDeparture())
+                .scheduledDeparture(new Date(flight.getScheduledDeparture().toInstant().toEpochMilli()))
                 .dayOfWeek(simpleDateformat.format(flight.getScheduledDeparture()))
                 .build();
     }
@@ -60,8 +61,8 @@ public class FlightMapper {
                 .departureAirport(flight.getDepartureAirport().getAirportCode())
                 .arrivalCity(flight.getArrivalCity())
                 .departureCity(flight.getDepartureCity())
-                .departureDate(flight.getScheduledDeparture())
-                .arrivalDate(flight.getScheduledArrival())
+                .departureDate(new Date(flight.getScheduledDeparture().toInstant().toEpochMilli()))
+                .arrivalDate(new Date(flight.getScheduledArrival().toInstant().toEpochMilli()))
                 .flightId(flight.getId())
                 .fareConditions(fareCondition)
                 .build();

@@ -11,6 +11,10 @@ import com.example.airplains.servicies.BookingService;
 import com.example.airplains.servicies.FlightsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -45,15 +49,23 @@ public class FlightsController {
     public RouteDto getAllRoutes(
             @RequestParam String from,
             @RequestParam String to,
-            @RequestParam String departureDate,
+            @RequestParam("departureDate") String rawDate,
             @RequestParam("bookingClass") FareConditions fareCondition,
-            @RequestParam(required = false, defaultValue = "0") int connections) {
-        return flightsService.getRoutes(from, to, departureDate, fareCondition, connections);
+            @RequestParam(required = false, defaultValue = "0") int connections) throws ParseException {
+
+        var simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        var departureDateFrom = new Date(simpleDateFormat.parse(rawDate).getTime());
+        var instant = departureDateFrom.toInstant();
+        var offsetDateTime = instant.atOffset(ZoneOffset.UTC);
+
+        return flightsService.getRoutes(from, to, offsetDateTime, fareCondition, connections);
     }
 
     @PostMapping("bookings")
-    public List<BookingDto> bookRoute(@RequestBody NewBookingParameters parameters){
-        return this.bookingService.bookRoute(parameters);
+    public List<BookingDto> bookRoute(@RequestBody NewBookingParameters parameters) {
+        var res = this.bookingService.bookRoute(parameters);
+
+        return res;
     }
 
     @PostMapping("{flightId}/check-in")

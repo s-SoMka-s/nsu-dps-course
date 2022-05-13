@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.OffsetDateTime;
 
 import static com.example.airplains.tools.utils.DestinationUtils.isAirportCode;
 
@@ -23,10 +24,10 @@ public class Flight {
     private String flightNo;
 
     @Column(name = "scheduled_departure")
-    private Date scheduledDeparture;
+    private OffsetDateTime scheduledDeparture;
 
     @Column(name = "scheduled_arrival")
-    private Date scheduledArrival;
+    private OffsetDateTime scheduledArrival;
 
     @ManyToOne
     @JoinColumn(name = "departure_airport", referencedColumnName = "airport_code")
@@ -43,10 +44,10 @@ public class Flight {
     private String aircraftCode;
 
     @Column(name = "actual_departure")
-    private Date actualDeparture;
+    private OffsetDateTime actualDeparture;
 
     @Column(name = "actual_arrival")
-    private Date actualArrival;
+    private OffsetDateTime actualArrival;
 
     public String getArrivalCity() {
         return this.getArrivalAirport().getCity();
