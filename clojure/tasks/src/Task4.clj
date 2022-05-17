@@ -6,15 +6,17 @@
 (declare notify-msg)
 
 (defn storage
-  "Creates a new storage
-   ware - a name of ware to store (string)
-   notify-step - amount of stored items required for logger to react. 0 means to logging
-   consumers - factories to notify when the storage is updated
+  "Создает новое хранилище
+   ware - наименование изделия для хранения (string)
+   notify-step - количество сохраненных элементов, необходимых для реакции регистратора.
+   consumers - фабрики, которые нужно уведомлять, когда хранилище обновляется
    returns a map that contains:
-     :storage - an atom to store items that can be used by factories directly
-     :ware - a stored ware name
-     :worker - an agent to send supply-msg"
+     :storage - атом для хранения предметов, которые могут использоваться фабриками напрямую
+     :ware - наименование изделия для хранения
+     :worker - агент для отправки сообщения поставки (notify-msg)"
   [ware notify-step & consumers]
+  ;; Атомы предоставляют способ управления общим, синхронным, независимым состоянием.
+  ;; : - индикатор ключевого слова, ключ в map-e
   (let [counter (atom 0 :validator #(>= % 0)),
         worker-state {:storage     counter,
                       :ware        ware,
@@ -25,26 +27,26 @@
      :worker  (agent worker-state)}))
 
 (defn factory
-  "Creates a new factory
-   amount - number of items produced per cycle
-   duration - cycle duration in milliseconds
-   target-storage - a storage to put products with supply-msg
-   ware-amounts - a list of ware names and their amounts required for a single cycle
+  "Создаем новую фабрику
+   amount - количество изделий, произведенных за цикл
+   duration - продолжительность цикла в миллисекундах
+   target-storage - хранилище для продуктов с supply-msg
+   ware-amounts - список наименований изделий и их количество, необходимое для одного цикла
    returns a map that contains:
-     :worker - an agent to send notify-msg"
+     :worker - агент для отправки сообщения поставки (notify-msg)"
   [amount duration target-storage & ware-amounts]
   (let [bill (apply hash-map ware-amounts),
         buffer (reduce-kv (fn [acc k _] (assoc acc k 0))
                           {} bill),
         ;;a state of factory agent:
-        ;;  :amount - a number of items to produce per cycle
-        ;;  :duration - a duration of cycle
-        ;;  :target-storage - a storage to place products (via supply-msg to its worker)
-        ;;  :bill - a map with ware names as keys and their amounts of values
-        ;;     shows how many wares must be consumed to perform one production cycle
+        ;;  :amount
+        ;;  :duration
+        ;;  :target-storage
+        ;;  :bill - map-a с названиями товаров в качестве ключей и их количеством значений
+        ;;          показывает, сколько изделий необходимо израсходовать для выполнения одного производственного цикла
         ;; то есть bill - маппинг, ключи - названия деталей, значения - их количество для одного производственного цикла.
-        ;;  :buffer - a map with similar structure as for :bill that shows how many wares are already collected;
-        ;;     it is the only mutable part.
+        ;;  :buffer - map-a со структурой, аналогичной :bill, которая показывает, сколько товаров уже собрано;
+        ;;          это единственная изменяемая часть.
         ;; то есть buffer - маппинг, ключи - названия деталей, значения - сколько их уже накопилось
         worker-state {:amount         amount,
                       :duration       duration,
@@ -54,8 +56,8 @@
     {:worker (agent worker-state)}))
 
 (defn source
-  "Creates a source that is a thread that produces 'amount' of wares per cycle to store in 'target-storage'
-   and with given cycle 'duration' in milliseconds
+  "Создает источник, представляющий собой поток, производящий 'amount' изделий за цикл для хранения в 'target-storage'
+   с заданной 'duration' цикла в миллисекундах
    returns Thread that must be run explicitly"
   [amount duration target-storage]
   (new Thread
@@ -65,10 +67,11 @@
          (recur))))
 
 (defn supply-msg
-  "A message that can be sent to a storage worker to notify that the given 'amount' of wares should be added.
-   Adds the given 'amount' of ware to the storage and notifies all the registered factories about it
-   state - see code of 'storage' for structure"
+  "Сообщение, которое может быть отправлено работнику хранилища, чтобы уведомить о том, что данный 'amount' изделий нужно добавить.
+   Добавляет заданный 'amount' изделий в хранилище и уведомляет все зарегистрированные фабрики об этом
+   state - описание см в коде 'storage'"
   [state amount]
+  ;; swap! - меняет значение атома
   (swap! (state :storage) #(+ % amount))
   (let [ware (state :ware),
         cnt @(state :storage),
@@ -87,7 +90,7 @@
   state)
 
 ; у нас есть список ключ-значение. Мы берем необх. ключ (текущей ware) и берем значение. Проверяем У нас сейчас >= необходимого
-; если достаточно деталей то мы галочку ставим и так для каждого элемента
+; если достаточно деталей то ставим галочку и так для каждого элемента
 (defn enough-ware? [ware_raw buffer]
   (some (fn [kv] (and (= (key ware_raw) (key kv)) (>= (val kv) (val ware_raw)))) (seq buffer)))
 
@@ -100,17 +103,17 @@
   (update-map buffer (fn [key val] (- val (bill key)))))
 
 (defn notify-msg
-  "A message that can be sent to a factory worker to notify that the provided 'amount' of 'ware's are
-   just put to the 'storage-atom'."
-  ;; 'state' is for agent created in 'factory', see comments in its code for details
-  ;; The implementation should:
-  ;; - try to retrieve some items from the 'storage-atom' if necessary
-  ;; - if the retrieval is not successful, do not forget to handle validation exception correctly
-  ;; - if the retrieval is successful, put wares into the internal ':buffer'
-  ;; - when there are enough wares of all types according to :bill, a new cycle must be started with given duration;
-  ;;   after it finished all the wares must be removed from the internal ':buffer' and ':target-storage' must be notified
-  ;;   with 'supply-msg'
-  ;; - return new agent state with possibly modified ':buffer' in any case!
+  "Сообщение, которое можно отправить заводскому рабочему, чтобы уведомить о том, что 'amount' изделий
+       отправилось в 'storage-atom'."
+  ;; 'state' - агент созданный в 'factory'
+  ;; Требования к реализации:
+  ;; - попытаться получить некоторые элементы из 'storage-atom' если необходимо
+  ;; - если поиск не удался, не забудьте правильно обработать исключение проверки
+  ;; - если поиск прошел успешно, поместите товары во внутренний ':buffer'
+  ;; - при наличии достаточного количества товаров всех видов по :bill, новый цикл должен быть запущен с заданной продолжительностью;
+  ;;   после его завершения все изделия должны быть удалены из внутреннего ':buffer' и ':target-storage' должен быть уведомлен
+  ;;   с помощью 'supply-msg'
+  ;; - return новое состояние агента с возможным изменением ':buffer' при любых обстоятельствах!
 
   ; Приходит сообщение, что склад пополнился деталями. Соответственно фабрики могут взять к себе детали на производство
   [state ware storage-atom amount]

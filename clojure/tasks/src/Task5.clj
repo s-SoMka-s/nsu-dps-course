@@ -19,12 +19,16 @@
           (Thread/sleep dining-time))))))
 
 (defn run-phil [n cycles eat-time think-time]
+        ; #(..) - анонимная функция с аргументом %
+        ; ref x - возвращает ref cо значением x
   (let [forks (map #(ref %) (repeat n 0)), ; получаем ссылки на номера вилок
+        ; future - для вызова тела объекта в дургом потоке
         philosophers (map #(future (philosopher cycles eat-time think-time % forks)) (range n))] ; каждый филосов - отдельный поток
-    (map deref philosophers)))
+    (map deref philosophers))) ; map deref - ожидает результат future
 
 (def n 5)
 (def cycles 1)
 
 (time (println (run-phil n cycles 100 200)))
+; @ - получить текущее значение по ссылке
 (println "Number of transactions:" (- @transactions-count (* n cycles)))
