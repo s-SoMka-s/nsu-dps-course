@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.postgresql:postgresql:42.2.19'
+    implementation 'com.google.guava:guava:30.1.1-jre'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.ostermiller:utils:1.07.00'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
