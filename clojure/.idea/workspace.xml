@@ -20,7 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49e8f52b-cbf0-4451-b204-64999a0f2bc8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/tasks/src/Task1.clj" beforeDir="false" afterPath="$PROJECT_DIR$/tasks/src/Task1.clj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/clojure.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/clojure.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/clojure.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +32,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -44,9 +50,31 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Clojure Application.Task5">
+    <configuration default="true" type="Babashka" factoryName="BabashkaLocalRepl" activateToolWindowBeforeRun="false">
+      <setting name="displayName" value="" />
+      <setting name="bbPath" value="" />
+      <setting name="parameters" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <setting name="workingDir" value="" />
+      <setting name="focusEditor" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
       <setting name="displayName" value="" />
       <setting name="replType" value="NREPL" />
@@ -57,6 +85,7 @@
       <setting name="profiles" value="" />
       <setting name="aliases" value="" />
       <setting name="fixLineNumbers" value="false" />
+      <setting name="focusEditor" value="false" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="ClojureREPL" factoryName="Remote" activateToolWindowBeforeRun="false">
@@ -68,8 +97,56 @@
       <setting name="replPortFileType" value="STANDARD" />
       <setting name="customPortFile" value="" />
       <setting name="fixLineNumbers" value="false" />
+      <setting name="focusEditor" value="false" />
       <method v="2" />
     </configuration>
+    <configuration name="Task4" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
+      <module name="clojure" />
+      <setting name="path" value="$PROJECT_DIR$/tasks/src/Task4.clj" />
+      <setting name="namespace" value="" />
+      <setting name="execution" value="INTELLIJ" />
+      <setting name="profiles" value="" />
+      <setting name="aliases" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$/tasks/src" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Task5" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
+      <module name="clojure" />
+      <setting name="path" value="$PROJECT_DIR$/tasks/src/Task5.clj" />
+      <setting name="namespace" value="" />
+      <setting name="execution" value="INTELLIJ" />
+      <setting name="profiles" value="" />
+      <setting name="aliases" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$/tasks/src" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unnamed" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" nameIsGenerated="true">
+      <module name="clojure" />
+      <setting name="path" value="" />
+      <setting name="namespace" value="Task5" />
+      <setting name="execution" value="INTELLIJ" />
+      <setting name="profiles" value="" />
+      <setting name="aliases" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Clojure Application.Unnamed" />
+      <item itemvalue="Clojure Application.Task5" />
+      <item itemvalue="Clojure Application.Task4" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Clojure Application.Task5" />
+        <item itemvalue="Clojure Application.Task4" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -79,8 +156,14 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1640361991745</updated>
+      <workItem from="1652756883285" duration="189000" />
+      <workItem from="1652757090877" duration="776000" />
+      <workItem from="1652757892587" duration="646000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -92,12 +175,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="360" y="23" key="new project wizard" timestamp="1640362029874">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="360" y="23" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1640362029874" />
   </component>
 </project>
